@@ -45,6 +45,9 @@ PhysicsServer3D *create_jolt_physics_server() {
 
 	JoltPhysicsServer3D *physics_server = memnew(JoltPhysicsServer3D(run_on_separate_thread));
 
+	// Register JoltPhysicsServer singleton
+	Engine::get_singleton()->add_singleton(Engine::Singleton("JoltPhysicsServer3D", physics_server, "JoltPhysicsServer3D"));
+
 	return memnew(PhysicsServer3DWrapMT(physics_server, run_on_separate_thread));
 }
 
@@ -56,6 +59,9 @@ void initialize_jolt_physics_module(ModuleInitializationLevel p_level) {
 			jolt_initialize();
 			PhysicsServer3DManager::get_singleton()->register_server("Jolt Physics", callable_mp_static(&create_jolt_physics_server));
 			JoltProjectSettings::register_settings();
+
+			// Register JoltPhysicsServer3D class
+			GDREGISTER_ABSTRACT_CLASS(JoltPhysicsServer3D);
 		} break;
 		case MODULE_INITIALIZATION_LEVEL_SCENE: {
 		} break;

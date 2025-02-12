@@ -53,6 +53,11 @@
 #include "spaces/jolt_physics_direct_space_state_3d.h"
 #include "spaces/jolt_space_3d.h"
 
+void JoltPhysicsServer3D::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("space_step", "space", "step"), &JoltPhysicsServer3D::space_step);
+	ClassDB::bind_method(D_METHOD("space_flush_queries", "space"), &JoltPhysicsServer3D::space_flush_queries);
+}
+
 JoltPhysicsServer3D::JoltPhysicsServer3D(bool p_on_separate_thread) :
 		on_separate_thread(p_on_separate_thread) {
 	singleton = this;
@@ -1974,4 +1979,31 @@ float JoltPhysicsServer3D::generic_6dof_joint_get_applied_torque(RID p_joint) {
 	JoltGeneric6DOFJoint3D *g6dof_joint = static_cast<JoltGeneric6DOFJoint3D *>(joint);
 
 	return g6dof_joint->get_applied_torque();
+}
+
+/* SPACE STEP */
+void JoltPhysicsServer3D::space_step(const RID &p_space, double p_step) {
+	if (!active) {
+		return;
+	}
+
+	JoltSpace3D *space = space_owner.get_or_null(p_space);
+	ERR_FAIL_NULL(space);
+
+	job_system->pre_step();
+	space->step((float)p_step);
+	job_system->post_step();
+}
+
+void JoltPhysicsServer3D::space_flush_queries(const RID &p_space) {
+	if (!active) {
+		return;
+	}
+
+	JoltSpace3D *space = space_owner.get_or_null(p_space);
+	ERR_FAIL_NULL(space);
+
+	flushing_queries = true;
+	space->call_queries();
+	flushing_queries = false;
 }

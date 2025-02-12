@@ -118,7 +118,7 @@ public:
 	};
 
 private:
-	static void _bind_methods() {}
+	static void _bind_methods();
 
 public:
 	explicit JoltPhysicsServer3D(bool p_on_separate_thread);
@@ -489,6 +489,10 @@ public:
 
 	float generic_6dof_joint_get_applied_force(RID p_joint);
 	float generic_6dof_joint_get_applied_torque(RID p_joint);
+
+	/* SPACE STEP */
+	void space_step(const RID &p_space, double p_step);
+	void space_flush_queries(const RID &p_space);
 };
 
 VARIANT_ENUM_CAST(JoltPhysicsServer3D::HingeJointParamJolt)
