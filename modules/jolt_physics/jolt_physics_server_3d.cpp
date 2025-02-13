@@ -54,6 +54,7 @@
 #include "spaces/jolt_space_3d.h"
 
 void JoltPhysicsServer3D::_bind_methods() {
+	ClassDB::bind_static_method("JoltPhysicsServer3D", D_METHOD("get_singleton"), &JoltPhysicsServer3D::get_singleton);
 	ClassDB::bind_method(D_METHOD("space_step", "space", "step"), &JoltPhysicsServer3D::space_step);
 	ClassDB::bind_method(D_METHOD("space_flush_queries", "space"), &JoltPhysicsServer3D::space_flush_queries);
 }
